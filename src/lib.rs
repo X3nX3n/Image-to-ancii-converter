@@ -1,10 +1,9 @@
-use image::io::Reader as ImageReader;
 use image::DynamicImage;
 use image::GenericImageView;
 use image::imageops::FilterType;
 
 
-
+[warn(dead_code)]
 const ANCII_ARR: [char; 10] = ['.', ',', ':', '+', '*', '?', '%', 'S', '#', '@'];
 const ANCII_INVERSE_ARR: [char; 10] = ['@', '#', 'S','%','?', '*', '+', ':', ',','.' ];
 const OFFSET : f32 = 2.5;
@@ -28,7 +27,6 @@ impl AnciiImage{
         for index in 0..self.bitmap_color.len() {
                 let pixel = self.bitmap_color[index as usize];
                 let pixel_gray = (( pixel[0] as u16 +  pixel[1] as u16 +  pixel[2] as u16) / 3) as u8;
-                //println!("{} ", pixel_gray);
                 self.bitmap_gray.push(pixel_gray)
         }   
     }
@@ -36,12 +34,11 @@ impl AnciiImage{
     {
         for index in 0..self.bitmap_gray.len() {
             let value = self.bitmap_gray[index as usize];
-            let index_ancii  = self.ancii_map(value, 0, 255, 0, ANCII_INVERSE_ARR.len() as u8) as usize;
-            //println!("{} ", AnciiArr[index_ancii]);
+            let index_ancii  = self.ancii_map(value, 255, ANCII_INVERSE_ARR.len() as u8) as usize;
             self.ancii_matrix.push(ANCII_INVERSE_ARR[index_ancii]);
         }   
     }
-    fn ancii_map(&mut self, value: u8, start1: u8, stop1: u8, start2: u8, stop2:u8) -> u8
+    fn ancii_map(&mut self, value: u8, stop1: u8, stop2:u8) -> u8
     {
         ((value as f32  / stop1 as f32) * (stop2  - 1) as f32) as u8
     }
@@ -60,10 +57,20 @@ impl AnciiImage{//static
         for x in 0..img.height() {
             for y in 0..img.width() {
                 let _pixel = img.get_pixel(y, x);
-                //println!("Pixels values is: {} {} {}", _pixel[0],_pixel[1], _pixel[2]);
                 vec.push(_pixel);
             }
         }
         return vec;
+    }
+    pub fn resize(img: DynamicImage) -> DynamicImage{
+        let new_height = img.height() as f32 / OFFSET * MAX_WITH / img.width() as f32;
+        if img.width() as f32 > MAX_WITH || img.height() as f32 > new_height
+        {
+            return img.resize_exact(MAX_WITH as u32, new_height as u32, FilterType::Triangle);
+        }
+        else
+        {
+            return img;
+        };
     }
 }
