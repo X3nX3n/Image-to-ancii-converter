@@ -2,8 +2,6 @@ use image::DynamicImage;
 use image::GenericImageView;
 use image::imageops::FilterType;
 
-
-[warn(dead_code)]
 const ANCII_ARR: [char; 10] = ['.', ',', ':', '+', '*', '?', '%', 'S', '#', '@'];
 const ANCII_INVERSE_ARR: [char; 10] = ['@', '#', 'S','%','?', '*', '+', ':', ',','.' ];
 const OFFSET : f32 = 2.5;
@@ -16,7 +14,6 @@ pub struct AnciiImage {
     pub y: u32,
     pub ancii_matrix: String,
 }
-
 impl AnciiImage{
     pub fn new( _bitmap: Vec<image::Rgba<u8>>, _x: u32, _y: u32) -> AnciiImage
     {
