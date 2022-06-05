@@ -66,7 +66,7 @@ fn main() {
 
     //println!("Lenght is: {}", vec.len());
 
-    let mut ancii_image = AnciiImage::new(vec, img.height(), img.height());
+    let mut ancii_image = AnciiImage::new(vec, img.width(), img.height());
     ancii_image.convert_to_gray();
     ancii_image.create_ancii_matrix();
 
