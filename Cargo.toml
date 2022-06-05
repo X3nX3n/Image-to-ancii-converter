@@ -1,5 +1,5 @@
 [package]
-name = "ancii"
+name = "ancii_pong"
 version = "0.1.0"
 edition = "2021"
 
