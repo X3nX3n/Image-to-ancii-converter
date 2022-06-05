@@ -6,7 +6,7 @@ use image::imageops::FilterType;
 fn main() {
 
     const ANCII_ARR: [char; 10] = ['.', ',', ':', '+', '*', '?', '%', 'S', '#', '@'];
-
+    const ANCII_INVERSE_ARR: [char; 10] = ['@', '#', 'S','%','?', '*', '+', ':', ',','.' ];
     pub struct AnciiImage {
         bitmap_color: Vec<image::Rgba<u8>>,
         bitmap_gray: Vec<u8>,
@@ -33,9 +33,9 @@ fn main() {
         {
             for index in 0..self.bitmap_gray.len() {
                 let value = self.bitmap_gray[index as usize];
-                let index_ancii  = self.ancii_map(value, 0, 255, 0, ANCII_ARR.len() as u8) as usize;
+                let index_ancii  = self.ancii_map(value, 0, 255, 0, ANCII_INVERSE_ARR.len() as u8) as usize;
                 //println!("{} ", AnciiArr[index_ancii]);
-                self.ancii_matrix.push(ANCII_ARR[index_ancii]);
+                self.ancii_matrix.push(ANCII_INVERSE_ARR[index_ancii]);
             }   
         }
         fn ancii_map(&mut self, value: u8, start1: u8, stop1: u8, start2: u8, stop2:u8) -> u8
@@ -50,18 +50,20 @@ fn main() {
     //resize
 
     let max_with = 350 as f32;
-
-    let new_height = img.height() as f32 / 0.01 * max_with / img.width() as f32;
+    const OFFSET : f32 = 2.5;
+    let new_height = img.height() as f32 / OFFSET * max_with / img.width() as f32;
     img = if img.width() as f32 > max_with || img.height() as f32 > new_height
     {
-        img.resize(max_with as u32, new_height as u32, FilterType::Triangle)
+        img.resize_exact(max_with as u32, new_height as u32, FilterType::Triangle)
+        //img.resize(max_with as u32, new_height as u32, FilterType::Triangle)
     }
     else
     {
         img
     };
-
     
+    let height = img.height();
+    let width = img.width();
     let vec = get_pixels(&img);
 
     //println!("Lenght is: {}", vec.len());
